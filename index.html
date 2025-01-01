@@ -128,63 +128,26 @@
             margin-bottom: 20px;
         }
 
-        .form label {
-            display: block;
-            margin-bottom: 10px;
-            font-size: 1.2em;
-        }
-
-        .form input[type="text"],
-        .form input[type="tel"],
-        .form input[type="number"] {
-            width: calc(100% - 20px);
-            padding: 10px;
-            margin-bottom: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 1em;
-        }
-
-        .form button {
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1.2em;
-            transition: background-color 0.3s;
-        }
-
-        .form button:hover {
-            background-color: #45a049;
-        }
-
-        .form img {
-            display: block;
-            margin: 20px auto;
-            width: 250px;
-            height: 250px;
-        }
-
         .form p {
             text-align: center;
             font-size: 1.2em;
             color: #666;
         }
 
-        .form input[type="submit"] {
+        .buy-button {
+            display: none;
+            padding: 15px 30px;
             background-color: #4CAF50;
             color: white;
-            padding: 10px 20px;
             border: none;
             border-radius: 5px;
+            font-size: 1.5em;
             cursor: pointer;
-            font-size: 1em;
-            transition: background-color 0.3s;
+            margin-top: 20px;
+            text-align: center;
         }
 
-        .form input[type="submit"]:hover {
+        .buy-button:hover {
             background-color: #45a049;
         }
     </style>
@@ -250,16 +213,8 @@
             <p>Total: ₹<span id="total">0</span></p>
         </div>
 
-        <div class="form">
-            <h2>Order Form</h2>
-            <form id="order-form">
-                <label>Name: <input type="text" name="name" required></label>
-                <label>Mobile No: <input type="tel" name="tel" required></label>
-                <p>UPI ID: munnagohith@okaxis</p>
-                <label>Transaction ID: <input type="text" name="transaction_id" required></label>
-                <button type="button" onclick="submitOrder()">Submit Order</button>
-            </form>
-        </div>
+        <!-- Buy Now button -->
+        <button class="buy-button" id="buy-now-button" onclick="submitOrder()">Buy Now</button>
     </div>
 
     <script>
@@ -272,6 +227,7 @@
         function updateCartUI() {
             const cartList = document.getElementById("cart-list");
             const total = document.getElementById("total");
+            const buyNowButton = document.getElementById("buy-now-button");
             cartList.innerHTML = "";
             let totalPrice = 0;
             cart.forEach(item => {
@@ -281,36 +237,24 @@
                 totalPrice += item.price;
             });
             total.textContent = totalPrice;
+
+            // Show or hide the Buy Now button based on total amount
+            if (totalPrice > 0) {
+                buyNowButton.style.display = "block"; // Show button if total > 0
+            } else {
+                buyNowButton.style.display = "none"; // Hide button if total = 0
+            }
         }
 
-        async function submitOrder() {
-            const orderDetails = {
-                name: document.querySelector('input[name="name"]').value,
-                tel: document.querySelector('input[name="tel"]').value,
-                transactionId: document.querySelector('input[name="transaction_id"]').value,
-                totalAmount: parseInt(document.getElementById("total").textContent),
-                cart: cart,
-            };
+        function submitOrder() {
+            const totalAmount = document.getElementById("total").textContent;
 
-            try {
-                const response = await fetch('https://your-backend-url.com/orders', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(orderDetails),
-                });
-
-                if (response.ok) {
-                    alert("Order submitted successfully!");
-                    cart = [];
-                    updateCartUI();
-                } else {
-                    alert("Failed to submit order. Please try again.");
-                }
-            } catch (error) {
-                console.error("Error submitting order:", error);
-            }
+            // Google Form URL (replace with your actual form URL)
+            const googleFormUrl = "https://forms.gle/iD6Wt2sjXTj5L9pa6"; 
+            const redirectUrl = `${googleFormUrl}?entry.1234567890=${totalAmount}`;
+            
+            // Redirecting to Google Form with pre-filled total amount
+            window.location.href = redirectUrl;
         }
     </script>
 </body>
